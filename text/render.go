@@ -133,6 +133,7 @@ func trimSpace(s string, last bool) (string, error) {
 	return s, nil
 }
 
+// Render renders the document parse tree n to the given writer.
 func Render(w io.Writer, n *document.Node, list listConfig) {
 	listIndex := 1
 

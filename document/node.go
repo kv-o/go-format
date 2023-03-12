@@ -1,3 +1,5 @@
+// Package document provides identifiers and structures common to all document
+// file formats.
 package document
 
 import (
