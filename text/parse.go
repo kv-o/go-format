@@ -12,7 +12,7 @@ import (
 )
 
 // Parse returns a pointer to a document.Node representing the contents of the
-// given io.Reader.
+// given reader.
 func Parse(r io.Reader) (*document.Node, error) {
 	bytes, err := io.ReadAll(r)
 	if err != nil {
