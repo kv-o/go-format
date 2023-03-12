@@ -1,21 +1,26 @@
-package markdown
+// Package text implements functions for processing text files.
+//
+// This package provides functions for interoperability with other document file
+// formats. This package does not provide functions for general text (file)
+// processing, which are provided by the Go standard library.
+package text
 
 import (
-	"errors"
+	"io"
+
+	"codeberg.org/kvo/format/document"
 )
 
-func parseHtml(r *html.Node) (string, error) {
-	// TODO: Implement this function.
-	return "", errors.New("unimplemented function")
-}
-
-// Parse returns the parse tree for a document contained in interface r, which
-// at the moment may only be an html.Node.
-func Parse(r any) (string, error) {
-	switch r.(type) {
-	case html.Node:
-		return parseHtml(r)
-	default:
-		return nil, errors.New("invalid parse input type")
+// Parse returns a pointer to a document.Node representing the contents of the
+// given io.Reader.
+func Parse(r io.Reader) (*document.Node, error) {
+	bytes, err := io.ReadAll(r)
+	if err != nil {
+		return nil, err
 	}
+	node := document.Node{
+		Type: document.TextNode,
+		Data: string(bytes),
+	}
+	return &node, nil
 }
