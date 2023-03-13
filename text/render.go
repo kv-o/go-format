@@ -133,8 +133,7 @@ func trimSpace(s string, last bool) (string, error) {
 	return s, nil
 }
 
-// Render renders the document parse tree n to the given writer.
-func Render(w io.Writer, n *document.Node, list listConfig) {
+func render(w io.Writer, n *document.Node, list listConfig) {
 	listIndex := 1
 
 	newlist := listConfig{
@@ -349,7 +348,7 @@ func Render(w io.Writer, n *document.Node, list listConfig) {
 			newlist.Type = ""
 		}
 
-		Render(w, c, newlist)
+		render(w, c, newlist)
 	}
 
 	if n.Type == document.TextNode {
@@ -389,4 +388,20 @@ func Render(w io.Writer, n *document.Node, list listConfig) {
 			fmt.Fprintf(w, "\n————————————————————\n")
 		}
 	}
+}
+
+// Render renders the document parse tree n to the given writer.
+func Render(w io.Writer, n *document.Node) {
+	newlist := listConfig{
+		Index: nil,
+		Last: false,
+		Reversed: false,
+		Type: "",
+	}
+	for n.NextSibling != nil {
+		render(w, n, newlist)
+		n = n.NextSibling
+	}
+	newlist.Last = true
+	render(w, n, newlist)
 }
