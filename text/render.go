@@ -133,7 +133,7 @@ func trimSpace(s string, last bool) (string, error) {
 	return s, nil
 }
 
-func render(w io.Writer, n *document.Node, list listConfig) {
+func render(w io.Writer, n *document.Node, list listConfig) error {
 	listIndex := 1
 
 	newlist := listConfig{
@@ -149,7 +149,7 @@ func render(w io.Writer, n *document.Node, list listConfig) {
 	}
 
 	if n.Type != document.TextNode && builtin.Contains(forbidden, n.Data) {
-		return
+		return nil
 	}
 
 	if n.Type == document.ElementNode {
@@ -235,10 +235,16 @@ func render(w io.Writer, n *document.Node, list listConfig) {
 				case "A":
 					fmt.Fprintf(w, "%s. ", strings.ToUpper(alphaConv(uint(*list.Index))))
 				case "i":
-					prefix, _ := toRoman(uint(*list.Index))
+					prefix, err := toRoman(uint(*list.Index))
+					if err != nil {
+						return err
+					}
 					fmt.Fprintf(w, "%s. ", strings.ToLower(prefix))
 				case "I":
-					prefix, _ := toRoman(uint(*list.Index))
+					prefix, err := toRoman(uint(*list.Index))
+					if err != nil {
+						return err
+					}
 					fmt.Fprintf(w, "%s. ", prefix)
 				default:
 					fmt.Fprintf(w, "%d. ", *list.Index)
@@ -348,13 +354,16 @@ func render(w io.Writer, n *document.Node, list listConfig) {
 			newlist.Type = ""
 		}
 
-		render(w, c, newlist)
+		err := render(w, c, newlist)
+		if err != nil {
+			return err
+		}
 	}
 
 	if n.Type == document.TextNode {
 		switch n.Parent.Data {
 		case "applet", "math", "progress", "svg":
-			return
+			return nil
 		case "del", "s", "strike":
 			for _, c := range []rune(n.Data) {
 				fmt.Fprintf(w, string(c) + string(0x336))
@@ -362,7 +371,10 @@ func render(w io.Writer, n *document.Node, list listConfig) {
 		case "pre", "xmp":
 			fmt.Fprintf(w, n.Data)
 		default:
-			text, _ := trimSpace(strings.TrimSpace(n.Data), list.Last)
+			text, err := trimSpace(strings.TrimSpace(n.Data), list.Last)
+			if err != nil {
+				return err
+			}
 			fmt.Fprintf(w, text)
 		}
 	} else if n.Type == document.ElementNode {
@@ -388,10 +400,12 @@ func render(w io.Writer, n *document.Node, list listConfig) {
 			fmt.Fprintf(w, "\n————————————————————\n")
 		}
 	}
+	return nil
 }
 
-// Render renders the document parse tree n to the given writer.
-func Render(w io.Writer, n *document.Node) {
+// Render renders the document parse tree n to the given writer. Raises error if
+// an error occurs.
+func Render(w io.Writer, n *document.Node) error {
 	newlist := listConfig{
 		Index: nil,
 		Last: false,
@@ -399,9 +413,12 @@ func Render(w io.Writer, n *document.Node) {
 		Type: "",
 	}
 	for n.NextSibling != nil {
-		render(w, n, newlist)
+		err := render(w, n, newlist)
+		if err != nil {
+			return err
+		}
 		n = n.NextSibling
 	}
 	newlist.Last = true
-	render(w, n, newlist)
+	return render(w, n, newlist)
 }
