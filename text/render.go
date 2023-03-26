@@ -8,8 +8,8 @@ import (
 	"strconv"
 	"strings"
 
-	"codeberg.org/kvo/builtin"
 	"codeberg.org/kvo/format/document"
+	"codeberg.org/kvo/std"
 )
 
 type listConfig struct {
@@ -148,7 +148,7 @@ func render(w io.Writer, n *document.Node, list listConfig) error {
 		"template", "title",
 	}
 
-	if n.Type != document.TextNode && builtin.Contains(forbidden, n.Data) {
+	if n.Type != document.TextNode && std.Contains(forbidden, n.Data) {
 		return nil
 	}
 

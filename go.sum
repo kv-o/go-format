@@ -1,4 +1,4 @@
-codeberg.org/kvo/builtin v0.0.0-20230109053550-dcc8475279d5 h1:SRKoDqDGwgwUjnwdxiW1fexYqz7HxMYAXaboSd5EOs4=
-codeberg.org/kvo/builtin v0.0.0-20230109053550-dcc8475279d5/go.mod h1:dFIQ8jl/fpbdj9UmqmvOZibJJEzPEgYLFHl0VUBv5nQ=
+codeberg.org/kvo/std v0.0.0-20230313070111-0c905d759e42 h1:73SVoW6UvbUA/OwadxFptyXXUrZBdG5wYCw0/0G65us=
+codeberg.org/kvo/std v0.0.0-20230313070111-0c905d759e42/go.mod h1:T3eok1G+fYwwMMY2obvjO18tBFoqkqcCwbP25DmBz3U=
 golang.org/x/net v0.8.0 h1:Zrh2ngAOFYneWTAIAPethzeaQLuHwhuBkuV6ZiRnUaQ=
 golang.org/x/net v0.8.0/go.mod h1:QVkue5JL9kW//ek3r6jTKnTFis1tRmNAW2P1shuFdJc=
