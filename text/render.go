@@ -1,7 +1,6 @@
 package text
 
 import (
-	"errors"
 	"fmt"
 	"io"
 	"regexp"
@@ -10,6 +9,7 @@ import (
 
 	"codeberg.org/kvo/format/document"
 	"codeberg.org/kvo/std"
+	"codeberg.org/kvo/std/errors"
 )
 
 type listConfig struct {
@@ -33,11 +33,15 @@ func alphaConv(i uint) string {
 	return s
 }
 
-func toRoman(i uint) (string, error) {
+func toRoman(i uint) (string, errors.Error) {
 	if i > 3999 {
-		return strconv.Itoa(int(i)), errors.New("integer is larger than largest Roman numeral")
+		return strconv.Itoa(int(i)), errors.New(
+			"integer is larger than largest Roman numeral", nil,
+		)
 	} else if i == 0 {
-		return strconv.Itoa(int(i)), errors.New("no Roman numeral for zero")
+		return strconv.Itoa(int(i)), errors.New(
+			"no Roman numeral for zero", nil,
+		)
 	}
 
 	symbols := []struct {
@@ -71,7 +75,7 @@ func toRoman(i uint) (string, error) {
 }
 
 // BUG: Spacing is oddly rendered.
-func trimSpace(s string, last bool) (string, error) {
+func trimSpace(s string, last bool) (string, errors.Error) {
 	// 1. Cull rogue carriage returns.
 	s = strings.ReplaceAll(s, "\r", "")
 
@@ -79,12 +83,12 @@ func trimSpace(s string, last bool) (string, error) {
 
 	re, err := regexp.Compile("( )+\n( )+")
 	if err != nil {
-		return "", err
+		return "", errors.New(err.Error(), nil)
 	}
 	s = string(re.ReplaceAll([]byte(s), []byte("\n")))
 	re, err = regexp.Compile("(\t)+\n(\t)+")
 	if err != nil {
-		return "", err
+		return "", errors.New(err.Error(), nil)
 	}
 	s = string(re.ReplaceAll([]byte(s), []byte("\n")))
 
@@ -116,7 +120,7 @@ func trimSpace(s string, last bool) (string, error) {
 
 	re, err = regexp.Compile("( )+")
 	if err != nil {
-		return "", err
+		return "", errors.New(err.Error(), nil)
 	}
 	s = string(re.ReplaceAll([]byte(s), []byte(" ")))
 
@@ -133,7 +137,7 @@ func trimSpace(s string, last bool) (string, error) {
 	return s, nil
 }
 
-func render(w io.Writer, n *document.Node, list listConfig) error {
+func render(w io.Writer, n *document.Node, list listConfig) errors.Error {
 	listIndex := 1
 
 	newlist := listConfig{
@@ -212,7 +216,10 @@ func render(w io.Writer, n *document.Node, list listConfig) error {
 					break
 				}
 			}
-			fmt.Fprintf(w, `\n[ %s keygen | challenge: "%s" | key parameters: "%s" ]\n`, keytype, challenge, keyparams)
+			fmt.Fprintf(
+				w, `\n[ %s keygen | challenge: "%s" | key parameters: "%s" ]\n`,
+				keytype, challenge, keyparams,
+			)
 		case "li":
 			fmt.Fprintf(w, "\t")
 			if n.Parent.Data == "menu" {
@@ -237,13 +244,13 @@ func render(w io.Writer, n *document.Node, list listConfig) error {
 				case "i":
 					prefix, err := toRoman(uint(*list.Index))
 					if err != nil {
-						return err
+						return errors.New("failed generating Roman numeral", err)
 					}
 					fmt.Fprintf(w, "%s. ", strings.ToLower(prefix))
 				case "I":
 					prefix, err := toRoman(uint(*list.Index))
 					if err != nil {
-						return err
+						return errors.New("failed generating Roman numeral", err)
 					}
 					fmt.Fprintf(w, "%s. ", prefix)
 				default:
@@ -356,7 +363,7 @@ func render(w io.Writer, n *document.Node, list listConfig) error {
 
 		err := render(w, c, newlist)
 		if err != nil {
-			return err
+			return errors.New("error rendering node", err)
 		}
 	}
 
@@ -373,7 +380,7 @@ func render(w io.Writer, n *document.Node, list listConfig) error {
 		default:
 			text, err := trimSpace(strings.TrimSpace(n.Data), list.Last)
 			if err != nil {
-				return err
+				return errors.New("error trimming space from HTML text node", err)
 			}
 			fmt.Fprintf(w, text)
 		}
@@ -405,7 +412,7 @@ func render(w io.Writer, n *document.Node, list listConfig) error {
 
 // Render renders the document parse tree n to the given writer. Raises error if
 // an error occurs.
-func Render(w io.Writer, n *document.Node) error {
+func Render(w io.Writer, n *document.Node) errors.Error {
 	newlist := listConfig{
 		Index: nil,
 		Last: false,
@@ -415,7 +422,7 @@ func Render(w io.Writer, n *document.Node) error {
 	for n.NextSibling != nil {
 		err := render(w, n, newlist)
 		if err != nil {
-			return err
+			return errors.New("render HTML as text", err)
 		}
 		n = n.NextSibling
 	}
