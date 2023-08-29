@@ -3,7 +3,7 @@
 package document
 
 import (
-	"codeberg.org/kvo/format/html"
+	"git.sr.ht/~kvo/format/html"
 )
 
 type Node = html.Node

@@ -7,9 +7,9 @@ import (
 	"strconv"
 	"strings"
 
-	"codeberg.org/kvo/format/document"
-	"codeberg.org/kvo/std"
-	"codeberg.org/kvo/std/errors"
+	"git.sr.ht/~kvo/format/document"
+	"git.sr.ht/~kvo/libgo"
+	"git.sr.ht/~kvo/libgo/errors"
 )
 
 type listConfig struct {

@@ -8,7 +8,7 @@ package text
 import (
 	"io"
 
-	"codeberg.org/kvo/format/document"
+	"git.sr.ht/~kvo/format/document"
 )
 
 // Parse returns a pointer to a document.Node representing the contents of the
