@@ -8,7 +8,7 @@ import (
 	"strings"
 
 	"git.sr.ht/~kvo/format/document"
-	"git.sr.ht/~kvo/libgo"
+	"git.sr.ht/~kvo/libgo/defs"
 	"git.sr.ht/~kvo/libgo/errors"
 )
 
@@ -152,7 +152,7 @@ func render(w io.Writer, n *document.Node, list listConfig) errors.Error {
 		"template", "title",
 	}
 
-	if n.Type != document.TextNode && std.Contains(forbidden, n.Data) {
+	if n.Type != document.TextNode && defs.Has(forbidden, n.Data) {
 		return nil
 	}
 
