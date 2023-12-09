@@ -1,8 +1,20 @@
 package desktop
 
 import (
-	"os/exec"
+	"fmt"
+	"strings"
 )
+
+var execSubTable = [...][2]string{
+	{`\`, "\\\\"},
+	{"`", "\\`"},
+	{"$", "\\$"},
+}
+
+var reserved = [...]string{
+	` `, "\t", "\n", `"`, `'`, `\`, `>`, `<`, `~`, `|`,
+	`&`, `;`, `$`, `*`, `?`, `#`, `(`, `)`, "`",
+}
 
 // Opts represents the possible arguments that an Exec format specifier may
 // expand to.
@@ -35,16 +47,31 @@ type Opts struct {
 	Path string
 }
 
-// Command returns a ready-to-execute exec.Command from the unescaped, expanded
-// arguments specified by args.
-func Command(args []string) *exec.Cmd {
-	return nil
-}
-
 // EscapeExec applies quoting and escaping rules to the command line arguments
 // specified by args, and returns a single, sanitized command line.
 func EscapeExec(args []string) string {
-	return ""
+	cmd := ""
+	for i, s := range args {
+		changed := false
+		for _, r := range reserved {
+			if strings.Index(s, r) != -1 {
+				changed = true
+				break
+			}
+		}
+		for _, subRule := range execSubTable {
+			s = strings.ReplaceAll(s, subRule[0], subRule[1])
+		}
+		if i != 0 {
+			cmd += " "
+		}
+		if changed {
+			cmd += fmt.Sprintf(`"%s"`, s)
+		} else {
+			cmd += fmt.Sprintf("%s", s)
+		}
+	}
+	return cmd
 }
 
 // ExpandExec expands any format specifiers in the unescaped command-line
