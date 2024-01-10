@@ -48,7 +48,9 @@ type Opts struct {
 }
 
 // EscapeExec applies quoting and escaping rules to the command line arguments
-// specified by args, and returns a single, sanitized command line.
+// specified by args, and returns a single, sanitized command line. The
+// resulting command line must be sanitized as a string with EscapeString before
+// embedding into a Linux desktop entry.
 func EscapeExec(args []string) string {
 	cmd := ""
 	for i, s := range args {
@@ -76,8 +78,40 @@ func EscapeExec(args []string) string {
 
 // ExpandExec expands any format specifiers in the unescaped command-line
 // arguments specified by args, using the provided information in opts.
-func ExpandExec(args []string, opts Opts) string {
-	return ""
+func ExpandExec(args []string, opts Opts) []string {
+	var newArgs []string
+	fflag := false
+	uflag := false
+	Fflag := false
+	Uflag := false
+	for _, arg := range args {
+		switch arg {
+		case "%F":
+			if !Fflag {
+				newArgs = append(newArgs, opts.Files...)
+				Fflag = true
+			}
+		case "%U":
+			if !Uflag {
+				newArgs = append(newArgs, opts.URLs...)
+				Uflag = true
+			}
+		case "%i":
+			newArgs = append(newArgs, "--icon", opts.Icon)
+		default:
+			if !fflag {
+				arg = strings.Replace(arg, "%f", opts.File, 1)
+			}
+			if !uflag {
+				arg = strings.Replace(arg, "%u", opts.URL, 1)
+			}
+			arg = strings.ReplaceAll(arg, "%c", opts.Name)
+			arg = strings.ReplaceAll(arg, "%k", opts.Path)
+			arg = strings.ReplaceAll(arg, "%%", "%")
+			newArgs = append(newArgs, arg)
+		}
+	}
+	return newArgs
 }
 
 // UnescapeExec reverses any quoting and escaping rules applied to the command
