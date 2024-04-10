@@ -101,9 +101,11 @@ func ExpandExec(args []string, opts Opts) []string {
 		default:
 			if !fflag {
 				arg = strings.Replace(arg, "%f", opts.File, 1)
+				fflag = true
 			}
 			if !uflag {
 				arg = strings.Replace(arg, "%u", opts.URL, 1)
+				uflag = true
 			}
 			arg = strings.ReplaceAll(arg, "%c", opts.Name)
 			arg = strings.ReplaceAll(arg, "%k", opts.Path)
@@ -117,5 +119,11 @@ func ExpandExec(args []string, opts Opts) []string {
 // UnescapeExec reverses any quoting and escaping rules applied to the command
 // line arguments in cmd, and returns a slice of command-line arguments.
 func UnescapeExec(cmd string) []string {
-	return nil
+	args := []string{}
+	// split into args
+	/*for i, arg := range args {
+		arg = 
+		args[i] = arg
+	}*/
+	return args
 }
