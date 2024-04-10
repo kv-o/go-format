@@ -33,7 +33,7 @@ func alphaConv(i uint) string {
 	return s
 }
 
-func toRoman(i uint) (string, errors.Error) {
+func toRoman(i uint) (string, error) {
 	if i > 3999 {
 		return strconv.Itoa(int(i)), errors.New(
 			"integer is larger than largest Roman numeral", nil,
@@ -75,7 +75,7 @@ func toRoman(i uint) (string, errors.Error) {
 }
 
 // BUG: Spacing is oddly rendered.
-func trimSpace(s string, last bool) (string, errors.Error) {
+func trimSpace(s string, last bool) (string, error) {
 	// 1. Cull rogue carriage returns.
 	s = strings.ReplaceAll(s, "\r", "")
 
@@ -137,7 +137,7 @@ func trimSpace(s string, last bool) (string, errors.Error) {
 	return s, nil
 }
 
-func render(w io.Writer, n *document.Node, list listConfig) errors.Error {
+func render(w io.Writer, n *document.Node, list listConfig) error {
 	listIndex := 1
 
 	newlist := listConfig{
@@ -412,7 +412,7 @@ func render(w io.Writer, n *document.Node, list listConfig) errors.Error {
 
 // Render renders the document parse tree n to the given writer. Raises error if
 // an error occurs.
-func Render(w io.Writer, n *document.Node) errors.Error {
+func Render(w io.Writer, n *document.Node) error {
 	newlist := listConfig{
 		Index: nil,
 		Last: false,
