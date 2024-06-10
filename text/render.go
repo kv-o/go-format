@@ -7,9 +7,9 @@ import (
 	"strconv"
 	"strings"
 
-	"git.sr.ht/~kvo/format/document"
-	"git.sr.ht/~kvo/libgo/defs"
-	"git.sr.ht/~kvo/libgo/errors"
+	"git.sr.ht/~kvo/go-format/document"
+	"git.sr.ht/~kvo/go-std/defs"
+	"git.sr.ht/~kvo/go-std/errors"
 )
 
 type listConfig struct {
