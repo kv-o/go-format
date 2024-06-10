@@ -3,7 +3,7 @@
 package document
 
 import (
-	"git.sr.ht/~kvo/format/html"
+	"git.sr.ht/~kvo/go-format/html"
 )
 
 type Node = html.Node

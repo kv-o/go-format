@@ -1,4 +1,4 @@
-git.sr.ht/~kvo/libgo v0.0.0-20240410080056-d9bdf42079e4 h1:PtGAQGcuT8yRKpIZC24aW6JhzyDIlFPZc/+lpN8Y02o=
-git.sr.ht/~kvo/libgo v0.0.0-20240410080056-d9bdf42079e4/go.mod h1:ciKrszSaW5iBdjhApZg/tpco4O3rlR69GBRVf0QKfp4=
-golang.org/x/net v0.24.0 h1:1PcaxkF854Fu3+lvBIx5SYn9wRlBzzcnHZSiaFFAb0w=
-golang.org/x/net v0.24.0/go.mod h1:2Q7sJY5mzlzWjKtYUEXSlBWCdyaioyXzRB2RtU8KVE8=
+git.sr.ht/~kvo/go-std v0.0.0-20240610061731-42a8554af6b1 h1:twhFtdDeignXoaWCEGxFtMnc5dxDoNnj8pps7WN386E=
+git.sr.ht/~kvo/go-std v0.0.0-20240610061731-42a8554af6b1/go.mod h1:YGjTbgse3yZbMPVoNJpX5MziBfgUbbbi8cbTUHZdCfk=
+golang.org/x/net v0.26.0 h1:soB7SVo0PWrY4vPW/+ay0jKDNScG2X9wFeYlXIvJsOQ=
+golang.org/x/net v0.26.0/go.mod h1:5YKkiSynbBIh3p6iOc/vibscux0x38BZDkn8sCUPxHE=
