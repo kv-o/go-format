@@ -8,15 +8,15 @@ import (
 	"strings"
 
 	"git.sr.ht/~kvo/go-format/document"
-	"git.sr.ht/~kvo/go-std/defs"
 	"git.sr.ht/~kvo/go-std/errors"
+	"git.sr.ht/~kvo/go-std/slices"
 )
 
 type listConfig struct {
-	Index *int
-	Last bool
+	Index    *int
+	Last     bool
 	Reversed bool
-	Type string
+	Type     string
 }
 
 func alphaConv(i uint) string {
@@ -27,7 +27,7 @@ func alphaConv(i uint) string {
 	}
 	for i -= 1; i/26 != 0; i -= 1 {
 		s = symbols[i%26] + s
-		i = i/26
+		i = i / 26
 	}
 	s = symbols[i%26] + s
 	return s
@@ -35,12 +35,12 @@ func alphaConv(i uint) string {
 
 func toRoman(i uint) (string, error) {
 	if i > 3999 {
-		return strconv.Itoa(int(i)), errors.New(
-			"integer is larger than largest Roman numeral", nil,
+		return strconv.Itoa(int(i)), errors.New(nil,
+			"integer is larger than largest Roman numeral",
 		)
 	} else if i == 0 {
-		return strconv.Itoa(int(i)), errors.New(
-			"no Roman numeral for zero", nil,
+		return strconv.Itoa(int(i)), errors.New(nil,
+			"no Roman numeral for zero",
 		)
 	}
 
@@ -83,12 +83,12 @@ func trimSpace(s string, last bool) (string, error) {
 
 	re, err := regexp.Compile("( )+\n( )+")
 	if err != nil {
-		return "", errors.New(err.Error(), nil)
+		return "", errors.New(nil, err.Error())
 	}
 	s = string(re.ReplaceAll([]byte(s), []byte("\n")))
 	re, err = regexp.Compile("(\t)+\n(\t)+")
 	if err != nil {
-		return "", errors.New(err.Error(), nil)
+		return "", errors.New(nil, err.Error())
 	}
 	s = string(re.ReplaceAll([]byte(s), []byte("\n")))
 
@@ -102,7 +102,7 @@ func trimSpace(s string, last bool) (string, error) {
 		for _, c := range []rune(line) {
 			if string(c) == "\t" {
 				detabbed += " "
-				for len(detabbed) % tabstop != 0 {
+				for len(detabbed)%tabstop != 0 {
 					detabbed += " "
 				}
 			} else {
@@ -120,7 +120,7 @@ func trimSpace(s string, last bool) (string, error) {
 
 	re, err = regexp.Compile("( )+")
 	if err != nil {
-		return "", errors.New(err.Error(), nil)
+		return "", errors.New(nil, err.Error())
 	}
 	s = string(re.ReplaceAll([]byte(s), []byte(" ")))
 
@@ -141,9 +141,9 @@ func render(w io.Writer, n *document.Node, list listConfig) error {
 	listIndex := 1
 
 	newlist := listConfig{
-		Index: &listIndex,
+		Index:    &listIndex,
 		Reversed: false,
-		Type: "",
+		Type:     "",
 	}
 
 	forbidden := []string{
@@ -152,7 +152,7 @@ func render(w io.Writer, n *document.Node, list listConfig) error {
 		"template", "title",
 	}
 
-	if n.Type != document.TextNode && defs.Has(forbidden, n.Data) {
+	if n.Type != document.TextNode && slices.Has(forbidden, n.Data) {
 		return nil
 	}
 
@@ -244,13 +244,13 @@ func render(w io.Writer, n *document.Node, list listConfig) error {
 				case "i":
 					prefix, err := toRoman(uint(*list.Index))
 					if err != nil {
-						return errors.New("failed generating Roman numeral", err)
+						return errors.New(err, "failed generating Roman numeral")
 					}
 					fmt.Fprintf(w, "%s. ", strings.ToLower(prefix))
 				case "I":
 					prefix, err := toRoman(uint(*list.Index))
 					if err != nil {
-						return errors.New("failed generating Roman numeral", err)
+						return errors.New(err, "failed generating Roman numeral")
 					}
 					fmt.Fprintf(w, "%s. ", prefix)
 				default:
@@ -363,7 +363,7 @@ func render(w io.Writer, n *document.Node, list listConfig) error {
 
 		err := render(w, c, newlist)
 		if err != nil {
-			return errors.New("error rendering node", err)
+			return errors.New(err, "error rendering node")
 		}
 	}
 
@@ -373,14 +373,14 @@ func render(w io.Writer, n *document.Node, list listConfig) error {
 			return nil
 		case "del", "s", "strike":
 			for _, c := range []rune(n.Data) {
-				fmt.Fprintf(w, string(c) + string(0x336))
+				fmt.Fprintf(w, string(c)+string(0x336))
 			}
 		case "pre", "xmp":
 			fmt.Fprintf(w, n.Data)
 		default:
 			text, err := trimSpace(strings.TrimSpace(n.Data), list.Last)
 			if err != nil {
-				return errors.New("error trimming space from HTML text node", err)
+				return errors.New(err, "error trimming space from HTML text node")
 			}
 			fmt.Fprintf(w, text)
 		}
@@ -414,15 +414,15 @@ func render(w io.Writer, n *document.Node, list listConfig) error {
 // an error occurs.
 func Render(w io.Writer, n *document.Node) error {
 	newlist := listConfig{
-		Index: nil,
-		Last: false,
+		Index:    nil,
+		Last:     false,
 		Reversed: false,
-		Type: "",
+		Type:     "",
 	}
 	for n.NextSibling != nil {
 		err := render(w, n, newlist)
 		if err != nil {
-			return errors.New("render HTML as text", err)
+			return errors.New(err, "render HTML as text")
 		}
 		n = n.NextSibling
 	}
