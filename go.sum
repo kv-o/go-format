@@ -1,5 +1,3 @@
-git.sr.ht/~kvo/go-format v0.0.0-20240704135331-9905bc4f9381 h1:zy9gkJrgrIwadM+ouxz/8nWtF4lhN3Kgb01buaRZI9c=
-git.sr.ht/~kvo/go-format v0.0.0-20240704135331-9905bc4f9381/go.mod h1:DQoKv22ASTuI7JZx+hhtBq6SmCAIb8ZJy7GApJz3XgU=
 git.sr.ht/~kvo/go-std v0.0.0-20241210233433-21d60ed43e07 h1:gtZ/8Vivpg8jzS6Fx9zsSuR5ZBOeID4vxbhhVTqAGBA=
 git.sr.ht/~kvo/go-std v0.0.0-20241210233433-21d60ed43e07/go.mod h1:YGjTbgse3yZbMPVoNJpX5MziBfgUbbbi8cbTUHZdCfk=
 golang.org/x/net v0.32.0 h1:ZqPmj8Kzc+Y6e0+skZsuACbx+wzMgo5MQsJh9Qd6aYI=
